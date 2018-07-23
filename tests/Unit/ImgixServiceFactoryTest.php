@@ -16,7 +16,7 @@ class ImgixServiceFactoryTest extends PHPUnit_Framework_TestCase
         'uploads' => [
             'cdn_domains' => ['foo.imgix.net', 'bar.imgx.net'],
             'source_domains' => ['www.mysite.com', 'www2.mysite.com'],
-            'path_pattern' => '/media/uploads',
+            'path_patterns' => ['^/media/uploads'],
             'sign_key' => '1234567890',
             'shard_strategy' => 'cycle',
         ],

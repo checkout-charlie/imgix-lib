@@ -16,6 +16,8 @@ class CdnConfigurationParser
      * @param array $arrayConfiguration
      *
      * @return CdnConfiguration[]
+     *
+     * @throws \Sparwelt\ImgixLib\Exception\ConfigurationException
      */
     public static function parseArray(array $arrayConfiguration)
     {
@@ -27,7 +29,7 @@ class CdnConfigurationParser
             $parsedCdns[] = new CdnConfiguration(
                 $cdn['cdn_domains'],
                 isset($cdn['source_domains']) ? $cdn['source_domains'] : [],
-                isset($cdn['path_pattern']) ? $cdn['path_pattern'] : null,
+                isset($cdn['path_patterns']) ? $cdn['path_pattern'] : [],
                 isset($cdn['sign_key']) ? $cdn['sign_key'] : null,
                 isset($cdn['shard_strategy']) ? $cdn['shard_strategy'] : 'crc'
             );
@@ -53,10 +55,18 @@ class CdnConfigurationParser
             );
         }
 
-        if (isset($cdn['path_pattern']) && !is_string($cdn['path_pattern'])) {
+        if (isset($cdn['path_patterns']) && !is_array($cdn['path_patterns'])) {
             throw new ConfigurationException(
-                sprintf('String value expected for "path_pattern" for configuration %s', serialize($cdn))
+                sprintf('Array value expected for "path_patterns" for configuration %s', serialize($cdn))
             );
+        }
+
+        if (isset($cdn['path_patterns'])) {
+            foreach ($cdn['path_patterns'] as $pattern) {
+                if (!self::isValidRegex($pattern)) {
+                    throw new ConfigurationException(sprintf('Invalid regex pattern: %s', $pattern));
+                }
+            }
         }
 
         if (isset($cdn['sign_key']) && !is_string($cdn['sign_key'])) {
@@ -72,5 +82,15 @@ class CdnConfigurationParser
                 sprintf('Allowed values for "shard_strategy" are "crc" or "cycle" in configuration %s', serialize($cdn))
             );
         }
+    }
+
+    /**
+     * @param string $pattern
+     *
+     * @return bool
+     */
+    private static function isValidRegex($pattern)
+    {
+        return preg_match(sprintf('~%s~', $pattern), null) !== false;
     }
 }

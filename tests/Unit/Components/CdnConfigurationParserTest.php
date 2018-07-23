@@ -22,7 +22,7 @@ class CdnConfigurationParserTest extends PHPUnit_Framework_TestCase
                 'uploads' => [
                     'cdn_domains' => ['foo.imgix.net', 'bar.imgx.net'],
                     'source_domains' => ['www.mysite.com', 'www2.mysite.com'],
-                    'path_pattern' => '/^\/media/uploads',
+                    'path_patterns' => ['^/media/uploads/'],
                     'sign_key' => '1234567890',
                     'shard_strategy' => 'cycle',
                 ],
@@ -36,13 +36,13 @@ class CdnConfigurationParserTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals(['foo.imgix.net', 'bar.imgx.net'], $cdns[0]->getCdnDomains());
         $this->assertEquals(['www.mysite.com', 'www2.mysite.com'], $cdns[0]->getSourceDomains());
-        $this->assertEquals('/^\/media/uploads', $cdns[0]->getPathPattern());
+        $this->assertEquals(['^/media/uploads/'], $cdns[0]->getPathPatterns());
         $this->assertEquals('1234567890', $cdns[0]->getSignKey());
         $this->assertEquals('cycle', $cdns[0]->getShardStrategy());
 
         $this->assertEquals(['test.imgix.net', 'test2.imgx.net'], $cdns[1]->getCdnDomains());
         $this->assertEquals([], $cdns[1]->getSourceDomains());
-        $this->assertEquals(null, $cdns[1]->getPathPattern());
+        $this->assertEquals([], $cdns[1]->getPathPatterns());
         $this->assertEquals(null, $cdns[1]->getSignKey());
         $this->assertEquals('crc', $cdns[1]->getShardStrategy());
     }
@@ -58,7 +58,7 @@ class CdnConfigurationParserTest extends PHPUnit_Framework_TestCase
             [
                 'cdn_domains' => ['foo.imgix.net', 'bar.imgx.net'],
                 'source_domains' => ['www.mysite.com', 'www2.mysite.com'],
-                'path_pattern' => '^/media/uploads',
+                'path_patterns' => ['^/media/uploads/'],
                 'sign_key' => '1234567890',
                 'shard_strategy' => 'cycle',
             ]

@@ -18,9 +18,9 @@ class CdnConfiguration
      */
     private $sourceDomains;
     /**
-     * @var string|null
+     * @var string[]
      */
-    private $pathPattern;
+    private $pathPatterns;
     /**
      * @var string|null
      */
@@ -35,15 +35,15 @@ class CdnConfiguration
      *
      * @param string[]    $cdnDomains
      * @param string[]    $sourceDomains
-     * @param string|null $matchingPattern
+     * @param string[]    $pathPatterns
      * @param string|null $signKey
      * @param string      $shardStrategy
      */
-    public function __construct(array $cdnDomains, array $sourceDomains = [], $matchingPattern = null, $signKey = null, $shardStrategy = 'crc')
+    public function __construct(array $cdnDomains, array $sourceDomains = [], array $pathPatterns = [], $signKey = null, $shardStrategy = 'crc')
     {
         $this->cdnDomains = $cdnDomains;
         $this->sourceDomains = $sourceDomains;
-        $this->pathPattern = $matchingPattern;
+        $this->pathPatterns = $pathPatterns;
         $this->signKey = $signKey;
         $this->shardStrategy = $shardStrategy;
     }
@@ -65,11 +65,11 @@ class CdnConfiguration
     }
 
     /**
-     * @return string|null
+     * @return string[]
      */
-    public function getPathPattern()
+    public function getPathPatterns()
     {
-        return $this->pathPattern;
+        return $this->pathPatterns;
     }
 
     /**

@@ -16,7 +16,7 @@ class MultipleCdnConfigurationTest extends PHPUnit_Framework_TestCase
         'source_domains_and_pattern' => [
             'cdn_domains' => ['source-domain-and-pattern.imgix.net'],
             'source_domains' => ['mysite.com'],
-            'path_pattern' => '/^\/pattern/',
+            'path_patterns' => ['^/pattern/'],
         ],
         'source_sub_domain' => [
             'cdn_domains' => ['source-sub-domain.imgix.net'],
@@ -28,20 +28,20 @@ class MultipleCdnConfigurationTest extends PHPUnit_Framework_TestCase
         ],
         'pattern' => [
             'cdn_domains' => ['pattern.imgix.net'],
-            'path_pattern' => '/^\/pattern/',
+            'path_patterns' => ['^/pattern/'],
         ],
         'sign_key' => [
             'cdn_domains' => ['sign-key.imgix.net'],
-            'path_pattern' => '/^\/sign-key/',
+            'path_patterns' => ['^/sign-key/'],
             'sign_key' => '12345',
         ],
         'shard_crc' => [
             'cdn_domains' => ['shard-crc1.imgix.net', 'shard-crc2.imgix.net'],
-            'path_pattern' => '/^\/shard-crc/',
+            'path_patterns' => ['^/shard-crc/'],
         ],
         'shard_cycle' => [
             'cdn_domains' => ['shard-cycle1.imgix.net', 'shard-cycle2.imgix.net'],
-            'path_pattern' => '/^\/shard-cycle/',
+            'path_patterns' => ['^/shard-cycle/'],
             'shard_strategy' => 'cycle',
         ],
         'default' => [
