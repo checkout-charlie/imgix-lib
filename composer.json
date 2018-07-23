@@ -1,0 +1,22 @@
+{
+    "name": "sparwelt/imgix-lib",
+    "description": "",
+    "license": "MIT",
+    "homepage": "http://www.example.com",
+    "authors": [
+        {
+            "name": "Federico Infanti",
+            "email": "federico.infanti@sparwelt.de"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=5.6.0",
+        "imgix/imgix-php": "dev-master"
+    },
+    "autoload": {
+        "psr-4": {
+            "Sparwelt\\ImgixLib\\": "src/"
+        }
+    }
+}
