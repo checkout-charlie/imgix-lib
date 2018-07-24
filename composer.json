@@ -1,6 +1,6 @@
 {
     "name": "sparwelt/imgix-lib",
-    "description": "Configurable url and image manipulation library",
+    "description": "Generate and transform urls and responsive images.",
     "license": "MIT",
     "homepage": "https://github.com/sparwelt/imgix-lib",
     "authors": [
