@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "c5bca6bc51a6ce7b8e617d6430a42ab9",
+    "content-hash": "71205dd0479dcf655646df7f782aa87c",
     "packages": [
         {
             "name": "imgix/imgix-php",
-            "version": "dev-master",
+            "version": "2.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/imgix/imgix-php.git",
-                "reference": "01aca7006278949b5699baddef547b4dbc7dfb27"
+                "reference": "48135b04ec02f504904d69a3af1435414f60750c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/imgix/imgix-php/zipball/01aca7006278949b5699baddef547b4dbc7dfb27",
-                "reference": "01aca7006278949b5699baddef547b4dbc7dfb27",
+                "url": "https://api.github.com/repos/imgix/imgix-php/zipball/48135b04ec02f504904d69a3af1435414f60750c",
+                "reference": "48135b04ec02f504904d69a3af1435414f60750c",
                 "shasum": ""
             },
             "require": {
@@ -33,22 +33,17 @@
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-2-Clause"
-            ],
             "description": "A PHP client library for generating URLs with imgix.",
             "keywords": [
                 "imgix"
             ],
-            "time": "2018-06-20 00:13:38"
+            "time": "2018-03-13T17:09:56+00:00"
         }
     ],
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": {
-        "imgix/imgix-php": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {

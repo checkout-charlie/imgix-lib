@@ -1,8 +1,8 @@
 {
     "name": "sparwelt/imgix-lib",
-    "description": "",
+    "description": "Configurable url and image manipulation library",
     "license": "MIT",
-    "homepage": "http://www.example.com",
+    "homepage": "https://github.com/sparwelt/imgix-lib",
     "authors": [
         {
             "name": "Federico Infanti",
@@ -12,7 +12,7 @@
     "minimum-stability": "stable",
     "require": {
         "php": ">=5.6.0",
-        "imgix/imgix-php": "dev-master@dev"
+        "imgix/imgix-php": "~2.1.0"
     },
     "autoload": {
         "psr-4": {
