@@ -61,7 +61,6 @@ class ImageTransformer implements ImageTransformerInterface
                     }
                 }
             } catch (ResolutionException $e) {
-                return $originalImageHtml;
             }
         }
 

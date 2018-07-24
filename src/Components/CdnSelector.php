@@ -36,21 +36,18 @@ class CdnSelector implements CdnSelectorInterface
         }
 
         foreach ($this->cdnConfigurations as $configuration) {
-            $imageParts = parse_url($originalUr);
+            $originalPath = parse_url($originalUr, PHP_URL_PATH);
+            $originalHost = parse_url($originalUr, PHP_URL_HOST);
 
-            if (!isset($imageParts['path'])) {
+            if (null === $originalPath) {
                 throw new ResolutionException('Image has no path');
             }
 
-            if (!isset($imageParts['host']) && !empty($configuration->getSourceDomains())) {
+            if (!$this->isDomainMatch($originalHost, $configuration->getSourceDomains())) {
                 continue;
             }
 
-            if (isset($imageParts['host']) && !$this->isDomainMatch($imageParts['host'], $configuration->getSourceDomains())) {
-                continue;
-            }
-
-            if (!$this->isPatternMatch($configuration, $imageParts['path'])) {
+            if (!$this->isPatternMatch($configuration, $originalPath)) {
                 continue;
             }
 
@@ -68,7 +65,11 @@ class CdnSelector implements CdnSelectorInterface
      */
     private function isDomainMatch($imageHost, array $sourceDomains)
     {
-        return (in_array($imageHost, $sourceDomains) || in_array(explode('.', $imageHost, 2)[1], $sourceDomains));
+        if (null === $imageHost) {
+            return empty($sourceDomains) || in_array(null, $sourceDomains);
+        }
+
+        return in_array($imageHost, $sourceDomains) || in_array(explode('.', $imageHost, 2)[1], $sourceDomains);
     }
 
     /**

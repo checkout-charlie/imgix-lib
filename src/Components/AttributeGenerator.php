@@ -2,6 +2,8 @@
 
 namespace Sparwelt\ImgixLib\Components;
 
+use Sparwelt\ImgixLib\Exception\ConfigurationException;
+use Sparwelt\ImgixLib\Exception\ResolutionException;
 use Sparwelt\ImgixLib\Interfaces\AttributeGeneratorInterface;
 use Sparwelt\ImgixLib\Interfaces\UrlGeneratorInterface;
 
@@ -32,16 +34,20 @@ class AttributeGenerator implements AttributeGeneratorInterface
     public function generateAttributeValue($sourceImageUrl, $filters = [])
     {
         // ['1x' => ['w' => 123, 'h' => 200], '2x' = > [..]]
-        if ($this->isMatrix($filters)) {
+        if ($this::isMatrix($filters)) {
             $srcset = [];
             foreach ($filters as $format => $formatFilters) {
-                $srcset[] = sprintf('%s %s', $this->urlGenerator->generateUrl($sourceImageUrl, $formatFilters), $format);
+                $srcset[] = sprintf(
+                    '%s %s',
+                    $this->urlGenerator->generateUrl($sourceImageUrl, $formatFilters),
+                    $format
+                );
             }
 
             return implode(', ', $srcset);
         }
 
-        // ['w' => 123, 'h' => 200]
+    // ['w' => 123, 'h' => 200]
         if (is_array($filters)) {
             return $this->urlGenerator->generateUrl($sourceImageUrl, $filters);
         }
@@ -50,6 +56,8 @@ class AttributeGenerator implements AttributeGeneratorInterface
         if (is_scalar($filters)) {
             return $filters;
         }
+
+        throw new ConfigurationException('Filters should be either array or scalar');
     }
 
     /**
@@ -57,7 +65,7 @@ class AttributeGenerator implements AttributeGeneratorInterface
      *
      * @return bool
      */
-    private function isMatrix($var)
+    public static function isMatrix($var)
     {
         if (!is_array($var)) {
             return false;

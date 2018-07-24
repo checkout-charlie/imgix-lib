@@ -30,6 +30,9 @@ class CdnConfiguration
      */
     private $shardStrategy;
 
+    /** @var bool */
+    private $useSsl;
+
     /**
      * CdnConfiguration constructor.
      *
@@ -38,14 +41,16 @@ class CdnConfiguration
      * @param string[]    $pathPatterns
      * @param string|null $signKey
      * @param string      $shardStrategy
+     * @param bool        $useSsl
      */
-    public function __construct(array $cdnDomains, array $sourceDomains = [], array $pathPatterns = [], $signKey = null, $shardStrategy = 'crc')
+    public function __construct(array $cdnDomains, array $sourceDomains = [], array $pathPatterns = [], $signKey = null, $shardStrategy = 'crc', $useSsl = true)
     {
         $this->cdnDomains = $cdnDomains;
         $this->sourceDomains = $sourceDomains;
         $this->pathPatterns = $pathPatterns;
         $this->signKey = $signKey;
         $this->shardStrategy = $shardStrategy;
+        $this->useSsl = $useSsl;
     }
 
     /**
@@ -86,5 +91,13 @@ class CdnConfiguration
     public function getShardStrategy()
     {
         return $this->shardStrategy;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isUseSsl()
+    {
+        return $this->useSsl;
     }
 }

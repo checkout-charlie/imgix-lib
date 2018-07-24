@@ -8,8 +8,6 @@ use Sparwelt\ImgixLib\ImgixServiceFactory;
  * @author Federico Infanti <federico.infanti@sparwelt.de>
  *
  * @since  22.07.18 21:33
- *
- * @covers \Sparwelt\ImgixLib\ImgixService
  */
 class ImgixServiceTest extends PHPUnit_Framework_TestCase
 {
@@ -314,4 +312,16 @@ class ImgixServiceTest extends PHPUnit_Framework_TestCase
     {
         $this->assertEquals('<img src="">', $this->imgix->convertHtml('<img src=" ">'));
     }
+
+    /**
+     * @covers \Sparwelt\ImgixLib\ImgixService::prepareFilters
+     */
+    public function testExtraAttributes()
+    {
+        $this->assertEquals(
+            'https://test.imgix.net/test.png?h=100&w=200',
+            $this->imgix->generateAttributeValue('/test.png', ['h' => 100], ['w' => 200])
+        );
+    }
+
 }

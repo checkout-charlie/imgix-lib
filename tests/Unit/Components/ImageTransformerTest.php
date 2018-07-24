@@ -1,6 +1,8 @@
 <?php
 
 use Sparwelt\ImgixLib\Components\ImageTransformer;
+use Sparwelt\ImgixLib\Exception\ResolutionException;
+use Sparwelt\ImgixLib\Exception\TransformationException;
 use Sparwelt\ImgixLib\Interfaces\AttributeGeneratorInterface;
 use Sparwelt\ImgixLib\Interfaces\ImageRendererInterface;
 
@@ -8,14 +10,9 @@ use Sparwelt\ImgixLib\Interfaces\ImageRendererInterface;
  * @author Federico Infanti <federico.infanti@sparwelt.de>
  *
  * @since  22.07.18 21:34
- *
- * @covers \Sparwelt\ImgixLib\Components\ImageTransformer
  */
 class ImageTransformerTest extends PHPUnit_Framework_TestCase
 {
-    /**
-     *  @covers \Sparwelt\ImgixLib\Components\ImageTransformer::transformImage()
-     */
     public function testTransformImage()
     {
         $attributesFilters = [
@@ -69,6 +66,124 @@ class ImageTransformerTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(
             '<img alt="bar" class="foo" src="trans1" srcset="trans2" sizes="trans4" data-srcset="trans3" other="trans5 1x, trans6 1x">',
             $imageTransformer->transformImage('<img src="src.png" class="foo" alt="bar" other="http://mysite.com/extra1.png 1x, /extra2.png 1x">', $attributesFilters)
+        );
+    }
+
+    public function testTransformNoImage()
+    {
+        $attributesFilters = [
+            'src' => ['h' => 100, 'w' => 100],
+        ];
+
+        $attributeGenerator = $this->getMockBuilder(AttributeGeneratorInterface::class)
+            ->getMock();
+
+        $attributeGenerator
+            ->expects($this->exactly(0))
+            ->method('generateAttributeValue');
+
+        $imageRenderer = $this->getMockBuilder(ImageRendererInterface::class)
+            ->getMock();
+
+        $imageRenderer
+            ->expects($this->exactly(0))
+            ->method('render');
+
+        $imageTransformer = new ImageTransformer($attributeGenerator, $imageRenderer);
+
+        $this->expectException(TransformationException::class);
+        $imageTransformer->transformImage('<a src="test.png" class="foo" alt="bar" other="http://mysite.com/extra1.png 1x, /extra2.png 1x">', $attributesFilters);
+    }
+
+    public function testTransformImageWithNoSrc()
+    {
+        $attributesFilters = [
+            'src' => ['h' => 100, 'w' => 100],
+        ];
+
+        $attributeGenerator = $this->getMockBuilder(AttributeGeneratorInterface::class)
+            ->getMock();
+
+        $attributeGenerator
+            ->expects($this->exactly(2))
+            ->method('generateAttributeValue')
+            ->withConsecutive(
+                ['http://mysite.com/extra1.png', []],
+                ['/extra2.png', []]
+            )
+            ->willReturnOnConsecutiveCalls('http://cdn.com/extra1.png', 'http://cdn.com/extra2.png');
+
+        $imageRenderer = $this->getMockBuilder(ImageRendererInterface::class)
+            ->getMock();
+
+        $imageRenderer
+            ->expects($this->exactly(1))
+            ->method('render')
+            ->with($this->callback(function ($imageDom) {
+                return ($imageDom instanceof \DOMElement)
+                    && 'foo' === $imageDom->getAttribute('class')
+                    && 'bar' === $imageDom->getAttribute('alt')
+                    && 'http://cdn.com/extra1.png 1x, http://cdn.com/extra2.png 2x' === $imageDom->getAttribute('other')
+                    && 3 === $imageDom->attributes->length
+                    ;
+            }))
+            ->willReturn('<img class="foo" alt="bar" other="http://cdn.com/extra1.png 1x, http://cdn.com/extra2.png 2x">');
+
+        $imageTransformer = new ImageTransformer($attributeGenerator, $imageRenderer);
+
+        $this->assertEquals(
+            '<img class="foo" alt="bar" other="http://cdn.com/extra1.png 1x, http://cdn.com/extra2.png 2x">',
+            $imageTransformer->transformImage('<img class="foo" alt="bar" other="http://mysite.com/extra1.png 1x, /extra2.png 2x">', $attributesFilters)
+        );
+    }
+
+    public function testTransformImagemalformedAttributeSrc()
+    {
+        $attributesFilters = [
+            'src' => ['h' => 100, 'w' => 100],
+        ];
+
+        $attributeGenerator = $this->getMockBuilder(AttributeGeneratorInterface::class)
+            ->getMock();
+
+        $attributeGenerator
+            ->expects($this->exactly(2))
+            ->method('generateAttributeValue')
+            ->withConsecutive(
+                ['http://mysite.com/extra1.png', []],
+                ['malformed/extra2.png', []]
+            )
+            ->willReturnCallback(
+                function ($imageUlr) {
+                    if ('http://mysite.com/extra1.png' === $imageUlr) {
+                        return 'http://cdn.com/extra1.png';
+                    }
+
+                     throw new ResolutionException('msg');
+                }
+            );
+
+        $imageRenderer = $this->getMockBuilder(ImageRendererInterface::class)
+            ->getMock();
+
+        $imageRenderer
+            ->expects($this->exactly(1))
+            ->method('render')
+            ->with($this->callback(function ($imageDom) {
+                return ($imageDom instanceof \DOMElement)
+                    && 'foo' === $imageDom->getAttribute('class')
+                    && 'bar' === $imageDom->getAttribute('alt')
+                    && 'http://cdn.com/extra1.png 1x, malformed/extra2.png 2x' === $imageDom->getAttribute('other')
+                    && 3 === $imageDom->attributes->length
+                    ;
+            }))
+            ->willReturn('<img class="foo" alt="bar" other="http://cdn.com/extra1.png 1x, malformed/extra2.png 2x">');
+
+        $imageTransformer = new ImageTransformer($attributeGenerator, $imageRenderer);
+
+        $this->assertEquals(
+            '<img class="foo" alt="bar" other="http://cdn.com/extra1.png 1x, malformed/extra2.png 2x">',
+            $imageTransformer->transformImage('<img class="foo" alt="bar" other="http://mysite.com/extra1.png 1x, malformed/extra2.png 2x">', $attributesFilters)
         );
     }
 }

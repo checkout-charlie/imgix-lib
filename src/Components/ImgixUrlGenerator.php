@@ -50,15 +50,26 @@ class ImgixUrlGenerator implements UrlGeneratorInterface
 
         $cdn = $this->cdnSelector->getCdnForImage($originalUrl);
         $cdnId = spl_object_hash($cdn);
+        $shardStrategy = $this->translateShardStrategy($cdn->getShardStrategy());
 
         if (!isset($this->builders[$cdnId])) {
-            $this->builders[$cdnId] = new UrlBuilder(
-                $cdn->getCdnDomains(),
-                true,
-                $cdn->getSignKey(),
-                $this->traslateShardStrategy($cdn->getShardStrategy()),
-                false
-            );
+            try {
+                $this->builders[$cdnId] = new UrlBuilder(
+                    $cdn->getCdnDomains(),
+                    $cdn->isUseSsl(),
+                    $cdn->getSignKey(),
+                    $shardStrategy,
+                    false
+                );
+            } catch (\InvalidArgumentException $e) {
+                throw new ResolutionException($e->getMessage());
+            }
+        }
+
+        $imagePath = parse_url($originalUrl, PHP_URL_PATH);
+
+        if (false === $imagePath) {
+            throw new ResolutionException(sprintf('Malformed image url %s', $originalUrl));
         }
 
         return $this->builders[$cdnId]->createURL(parse_url($originalUrl, PHP_URL_PATH), $filterParams);
@@ -71,7 +82,7 @@ class ImgixUrlGenerator implements UrlGeneratorInterface
      *
      * @throws \Sparwelt\ImgixLib\Exception\ConfigurationException
      */
-    private function traslateShardStrategy($shardStrategy)
+    private function translateShardStrategy($shardStrategy)
     {
         switch ($shardStrategy) {
             case 'crc':

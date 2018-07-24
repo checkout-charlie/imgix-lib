@@ -6,14 +6,9 @@ use Sparwelt\ImgixLib\Components\ImageRenderer;
  * @author Federico Infanti <federico.infanti@sparwelt.de>
  *
  * @since  22.07.18 21:34
- *
- * @covers \Sparwelt\ImgixLib\Components\ImageRenderer
  */
 class ImageRendererTest extends PHPUnit_Framework_TestCase
 {
-    /**
-     * @covers \Sparwelt\ImgixLib\Components\ImageRenderer::render()
-     */
     public function testRenderImage()
     {
         $image = (new \DOMDocument())->createElement('img');

@@ -29,9 +29,10 @@ class CdnConfigurationParser
             $parsedCdns[] = new CdnConfiguration(
                 $cdn['cdn_domains'],
                 isset($cdn['source_domains']) ? $cdn['source_domains'] : [],
-                isset($cdn['path_patterns']) ? $cdn['path_pattern'] : [],
+                isset($cdn['path_patterns']) ? $cdn['path_patterns'] : [],
                 isset($cdn['sign_key']) ? $cdn['sign_key'] : null,
-                isset($cdn['shard_strategy']) ? $cdn['shard_strategy'] : 'crc'
+                isset($cdn['shard_strategy']) ? $cdn['shard_strategy'] : 'crc',
+                isset($cdn['use_ssl']) ? $cdn['use_ssl'] : true
             );
         }
 
@@ -91,6 +92,10 @@ class CdnConfigurationParser
      */
     private static function isValidRegex($pattern)
     {
-        return preg_match(sprintf('~%s~', $pattern), null) !== false;
+        try {
+            return preg_match(sprintf('~%s~', $pattern), null) !== false;
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 }

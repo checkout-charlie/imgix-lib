@@ -1,6 +1,8 @@
 <?php
 
 use Sparwelt\ImgixLib\Components\AttributeGenerator;
+use Sparwelt\ImgixLib\Exception\ConfigurationException;
+use Sparwelt\ImgixLib\Exception\ResolutionException;
 use Sparwelt\ImgixLib\Interfaces\UrlGeneratorInterface;
 
 /**
@@ -11,7 +13,7 @@ use Sparwelt\ImgixLib\Interfaces\UrlGeneratorInterface;
 class AttributeGeneratorTest extends PHPUnit_Framework_TestCase
 {
     /**
-     * @covers \Sparwelt\ImgixLib\Components\AttributeGenerator::generateAttributeValue()
+     * @covers \Sparwelt\ImgixLib\Components\AttributeGenerator::__construct()
      */
     public function testGenerateAttributeArray()
     {
@@ -33,9 +35,7 @@ class AttributeGeneratorTest extends PHPUnit_Framework_TestCase
             $attributeGenerator->generateAttributeValue('test.png', $filter)
         );
     }
-    /**
-     * @covers \Sparwelt\ImgixLib\Components\AttributeGenerator::generateAttributeValue()
-     */
+
     public function testGenerateAttributeMatrix()
     {
         $urlGenerator = $this->getMockBuilder(UrlGeneratorInterface::class)
@@ -50,7 +50,7 @@ class AttributeGeneratorTest extends PHPUnit_Framework_TestCase
             ->expects($this->exactly(2))
             ->method('generateUrl')
             ->with('test.png', $this->logicalOr($filter['1x'], $filter['380w']))
-            ->will($this->returnValue('test.png?foo=bar'));
+            ->willReturn('test.png?foo=bar');
 
         $attributeGenerator = new AttributeGenerator($urlGenerator);
 
@@ -60,9 +60,6 @@ class AttributeGeneratorTest extends PHPUnit_Framework_TestCase
         );
     }
 
-    /**
-     * @covers \Sparwelt\ImgixLib\Components\AttributeGenerator::generateAttributeValue()
-     */
     public function testGenerateAttributeScalar()
     {
         $urlGenerator = $this->getMockBuilder(UrlGeneratorInterface::class)
@@ -77,5 +74,46 @@ class AttributeGeneratorTest extends PHPUnit_Framework_TestCase
         $attributeGenerator = new AttributeGenerator($urlGenerator);
 
         $this->assertSame('scalar-value', $attributeGenerator->generateAttributeValue('test.png', $filter));
+    }
+
+    public function testGenerateAttributeInvalidFilter()
+    {
+        $urlGenerator = $this->getMockBuilder(UrlGeneratorInterface::class)
+            ->getMock();
+
+        $urlGenerator
+            ->expects($this->exactly(0))
+            ->method('generateUrl');
+
+        $attributeGenerator = new AttributeGenerator($urlGenerator);
+
+        $this->expectException(ConfigurationException::class);
+        $attributeGenerator->generateAttributeValue('test.png', new stdClass());
+    }
+
+    public function testGenerateMatrixAttributeUrlResolutionException()
+    {
+        $urlGenerator = $this->getMockBuilder(UrlGeneratorInterface::class)
+            ->getMock();
+
+        $urlGenerator
+            ->expects($this->exactly(1))
+            ->method('generateUrl')
+            ->willThrowException(new ResolutionException());
+
+        $attributeGenerator = new AttributeGenerator($urlGenerator);
+
+        $this->expectException(ResolutionException::class);
+        $this->assertEquals('', $attributeGenerator->generateAttributeValue('malformedurl.png', ['w' => 12]));
+    }
+
+    public function testIsMatrix()
+    {
+        $this->assertTrue(AttributeGenerator::isMatrix(['a' => ['b']]));
+        $this->assertTrue(AttributeGenerator::isMatrix(['a' => ['b' => 1, 'c' => 2]]));
+        $this->assertFalse(AttributeGenerator::isMatrix(['a' => 1, 'b' => 2]));
+        $this->assertFalse(AttributeGenerator::isMatrix(['a', 'b']));
+        $this->assertFalse(AttributeGenerator::isMatrix('a'));
+        $this->assertFalse(AttributeGenerator::isMatrix(new stdClass()));
     }
 }

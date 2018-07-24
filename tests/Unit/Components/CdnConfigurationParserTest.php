@@ -7,19 +7,15 @@ use Sparwelt\ImgixLib\Exception\ConfigurationException;
  * @author Federico Infanti <federico.infanti@sparwelt.de>
  *
  * @since  22.07.18 21:34
- *
- * @covers \Sparwelt\ImgixLib\Components\CdnConfigurationParser
  */
 class CdnConfigurationParserTest extends PHPUnit_Framework_TestCase
 {
-    /**
-     * @covers \Sparwelt\ImgixLib\Components\CdnConfigurationParser::parseArray()
-     */
     public function testParseConfiguration()
     {
         $cdns = CdnConfigurationParser::parseArray(
             [
                 'uploads' => [
+                    'use_ssl' => true,
                     'cdn_domains' => ['foo.imgix.net', 'bar.imgx.net'],
                     'source_domains' => ['www.mysite.com', 'www2.mysite.com'],
                     'path_patterns' => ['^/media/uploads/'],
@@ -27,6 +23,7 @@ class CdnConfigurationParserTest extends PHPUnit_Framework_TestCase
                     'shard_strategy' => 'cycle',
                 ],
                 'default' => [
+                    'use_ssl' => true,
                     'cdn_domains' => ['test.imgix.net', 'test2.imgx.net'],
                 ],
             ]
@@ -47,9 +44,6 @@ class CdnConfigurationParserTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('crc', $cdns[1]->getShardStrategy());
     }
 
-    /**
-     * @covers \Sparwelt\ImgixLib\Components\CdnConfigurationParser::parseArray()
-     */
     public function testParseConfigurationWrongFormat()
     {
         $this->expectException(ConfigurationException::class);
@@ -63,5 +57,40 @@ class CdnConfigurationParserTest extends PHPUnit_Framework_TestCase
                 'shard_strategy' => 'cycle',
             ]
         );
+    }
+
+    public function testParseConfigurationWrongType1()
+    {
+        $this->expectException(ConfigurationException::class);
+
+        CdnConfigurationParser::parseArray([['cdn_domains' => 'string']]);
+    }
+
+    public function testParseConfigurationWrongType2()
+    {
+        $this->expectException(ConfigurationException::class);
+
+        CdnConfigurationParser::parseArray([['cdn_domains' => ['foo'], 'path_patterns' => 'string']]);
+    }
+
+    public function testParseConfigurationWrongType3()
+    {
+        $this->expectException(ConfigurationException::class);
+
+        CdnConfigurationParser::parseArray([['cdn_domains' => ['foo'], 'sign_key' => ['array']]]);
+    }
+
+    public function testParseConfigurationWrongType4()
+    {
+        $this->expectException(ConfigurationException::class);
+
+        CdnConfigurationParser::parseArray([['cdn_domains' => ['foo'], 'shard_strategy' => ['array']]]);
+    }
+
+    public function testInvalidRegex()
+    {
+        $this->expectException(ConfigurationException::class);
+
+        CdnConfigurationParser::parseArray([['cdn_domains' => ['foo'], 'path_patterns' => ['[']]]);
     }
 }

@@ -62,12 +62,14 @@ class ImgixService
     /**
      * @param string       $originalUrl
      * @param array|string $filtersOrConfigurationKey
+     * @param array        $extraFilters
      *
      * @return string
+     * @throws \Sparwelt\ImgixLib\Exception\ResolutionException
      */
-    public function generateUrl($originalUrl, $filtersOrConfigurationKey = [])
+    public function generateUrl($originalUrl, $filtersOrConfigurationKey = [], array $extraFilters = [])
     {
-        $filters = $this->prepareFilters($filtersOrConfigurationKey);
+        $filters = $this->prepareFilters($filtersOrConfigurationKey, $extraFilters);
 
         return $this->urlGenerator->generateUrl($originalUrl, $filters);
     }
@@ -75,12 +77,14 @@ class ImgixService
     /**
      * @param string       $originalUrl
      * @param array|string $filtersOrConfigurationKey
+     * @param array        $extraFilters
      *
      * @return string
+     * @throws \Sparwelt\ImgixLib\Exception\ResolutionException
      */
-    public function generateAttributeValue($originalUrl, $filtersOrConfigurationKey = [])
+    public function generateAttributeValue($originalUrl, $filtersOrConfigurationKey = [], array $extraFilters = [])
     {
-        $filters = $this->prepareFilters($filtersOrConfigurationKey);
+        $filters = $this->prepareFilters($filtersOrConfigurationKey, $extraFilters);
 
         return $this->attributeGenerator->generateAttributeValue($originalUrl, $filters);
     }
@@ -88,12 +92,13 @@ class ImgixService
     /**
      * @param string $originalUrl
      * @param array  $attributesFiltersOrConfigurationKey
+     * @param array  $extraFilters
      *
      * @return string
      */
-    public function generateImage($originalUrl, $attributesFiltersOrConfigurationKey = [])
+    public function generateImage($originalUrl, $attributesFiltersOrConfigurationKey = [], array $extraFilters = [])
     {
-        $attributesFilters = $this->prepareFilters($attributesFiltersOrConfigurationKey);
+        $attributesFilters = $this->prepareFilters($attributesFiltersOrConfigurationKey, $extraFilters);
 
         return $this->imageGenerator->generateImage($originalUrl, $attributesFilters);
     }
@@ -101,25 +106,27 @@ class ImgixService
     /**
      * @param string $html
      * @param array  $attributesFiltersOrConfigurationKey
+     * @param array  $extraFilters
      *
      * @return string
      */
-    public function convertHtml($html, $attributesFiltersOrConfigurationKey = [])
+    public function convertHtml($html, $attributesFiltersOrConfigurationKey = [], array $extraFilters = [])
     {
-        $attributesFilters = $this->prepareFilters($attributesFiltersOrConfigurationKey);
+        $attributesFilters = $this->prepareFilters($attributesFiltersOrConfigurationKey, $extraFilters);
 
         return $this->htmlConverter->convertHtml($html, $attributesFilters);
     }
 
     /**
      * @param array|string $filtersOrConfigurationKey
+     * @param array        $extraFilters
      *
      * @return array
      */
-    private function prepareFilters($filtersOrConfigurationKey)
+    private function prepareFilters($filtersOrConfigurationKey, array $extraFilters = [])
     {
         if (is_array($filtersOrConfigurationKey)) {
-            return $filtersOrConfigurationKey;
+            return array_merge($filtersOrConfigurationKey, $extraFilters);
         }
 
         if (false !== strpos($filtersOrConfigurationKey, '.')) {
@@ -138,9 +145,15 @@ class ImgixService
                 throw new ConfigurationException(sprintf('Unable to find attribute "%s" in filter configuration "%s"', $attribute, $configurationKey));
             }
 
-            return $this->filtersConfigurations[$configurationKey][$attribute];
+            return is_array($this->filtersConfigurations[$configurationKey][$attribute])
+                ? array_merge($this->filtersConfigurations[$configurationKey][$attribute], $extraFilters)
+                : $this->filtersConfigurations[$configurationKey][$attribute]
+                ;
         }
 
-        return $this->filtersConfigurations[$configurationKey];
+        return is_array($this->filtersConfigurations[$configurationKey])
+            ? array_merge($this->filtersConfigurations[$configurationKey], $extraFilters)
+            : $this->filtersConfigurations[$configurationKey]
+            ;
     }
 }

@@ -1,24 +1,18 @@
 <?php
 
-//use Sparwelt\ImgixLib\Service\ImgixUrlGenerator;
-
 use Sparwelt\ImgixLib\Components\ImgixUrlGenerator;
+use Sparwelt\ImgixLib\Exception\ConfigurationException;
+use Sparwelt\ImgixLib\Exception\ResolutionException;
 use Sparwelt\ImgixLib\Interfaces\CdnSelectorInterface;
-use Sparwelt\ImgixLib\Interfaces\UrlGeneratorInterface;
 use Sparwelt\ImgixLib\Model\CdnConfiguration;
 
 /**
  * @author Federico Infanti <federico.infanti@sparwelt.de>
  *
  * @since  22.07.18 21:34
- *
- * @covers \Sparwelt\ImgixLib\Components\ImgixUrlGenerator
  */
 class ImgixUrlGeneratorTest extends PHPUnit_Framework_TestCase
 {
-    /**
-     *  @covers \Sparwelt\ImgixLib\Components\ImgixUrlGenerator::generateUrl()
-     */
     public function testGenerate()
     {
         $cdn = new CdnConfiguration(['test.imgix.net']);
@@ -55,9 +49,6 @@ class ImgixUrlGeneratorTest extends PHPUnit_Framework_TestCase
         );
     }
 
-    /**
-     *  @covers \Sparwelt\ImgixLib\Components\ImgixUrlGenerator::generateUrl()
-     */
     public function testSignKey()
     {
         $cdn = new CdnConfiguration(['test.imgix.net'], [], [], 'testSign');
@@ -80,9 +71,6 @@ class ImgixUrlGeneratorTest extends PHPUnit_Framework_TestCase
         );
     }
 
-    /**
-     *  @covers \Sparwelt\ImgixLib\Components\ImgixUrlGenerator::generateUrl()
-     */
     public function testCRCShard()
     {
         $cdn = new CdnConfiguration(['one.imgix.net', 'two.imgix.net']);
@@ -116,9 +104,6 @@ class ImgixUrlGeneratorTest extends PHPUnit_Framework_TestCase
         );
     }
 
-    /**
-     *  @covers \Sparwelt\ImgixLib\Components\ImgixUrlGenerator::generateUrl()
-     */
     public function testCycleShard()
     {
         $cdn = new CdnConfiguration(['one.imgix.net', 'two.imgix.net'], [], [], null, 'cycle');
@@ -151,4 +136,71 @@ class ImgixUrlGeneratorTest extends PHPUnit_Framework_TestCase
             $generator->generateUrl('/test/test4.png', ['h' => 200, 'w' => 300])
         );
     }
+
+    public function testEmptyImageUrl()
+    {
+        $cdnSelector = $this->getMockBuilder(CdnSelectorInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $cdnSelector
+            ->expects($this->exactly(0))
+            ->method('getCdnForImage');
+
+        $generator = new ImgixUrlGenerator($cdnSelector);
+        $this->expectException(ResolutionException::class);
+        $generator->generateUrl('', []);
+    }
+
+    public function testWrongStrategy()
+    {
+        $cdnSelector = $this->getMockBuilder(CdnSelectorInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $cdnSelector
+            ->expects($this->exactly(1))
+            ->method('getCdnForImage')
+            ->willReturn(new CdnConfiguration(['foo'], [], [], null, 'wrong-shard-strategy'));
+        ;
+
+        $generator = new ImgixUrlGenerator($cdnSelector);
+        $this->expectException(ConfigurationException::class);
+        $generator->generateUrl('test.png', []);
+    }
+
+    public function testNoDomain()
+    {
+        $cdnSelector = $this->getMockBuilder(CdnSelectorInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $cdnSelector
+            ->expects($this->exactly(1))
+            ->method('getCdnForImage')
+            ->willReturn(new CdnConfiguration([], [], [], null));
+        ;
+
+        $generator = new ImgixUrlGenerator($cdnSelector);
+        $this->expectException(ResolutionException::class);
+        $generator->generateUrl('test.png', []);
+    }
+
+    public function testMalformedPath()
+    {
+        $cdnSelector = $this->getMockBuilder(CdnSelectorInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $cdnSelector
+            ->expects($this->exactly(1))
+            ->method('getCdnForImage')
+            ->willReturn(new CdnConfiguration(['domain.com'], [], [], null));
+        ;
+
+        $generator = new ImgixUrlGenerator($cdnSelector);
+        $this->expectException(ResolutionException::class);
+        $generator->generateUrl('http:///example.com', []);
+    }
+
 }
