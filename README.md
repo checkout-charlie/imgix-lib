@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/sparwelt/imgix-lib.svg?branch=master)](https://travis-ci.org/sparwelt/imgix-lib)
+[![Coverage Status](https://coveralls.io/repos/github/sparwelt/imgix-lib/badge.svg?branch=master)](https://coveralls.io/github/sparwelt/imgix-lib?branch=master)
 
 Imgix Library
 ===================

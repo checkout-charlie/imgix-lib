@@ -11,7 +11,7 @@ use Sparwelt\ImgixLib\Interfaces\ImageRendererInterface;
  *
  * @since  22.07.18 21:34
  */
-class ImageTransformerTest extends PHPUnit_Framework_TestCase
+class ImageTransformerTest extends \PHPUnit\Framework\TestCase
 {
     public function testTransformImage()
     {

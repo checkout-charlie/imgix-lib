@@ -8,7 +8,7 @@ use Sparwelt\ImgixLib\Exception\ConfigurationException;
  *
  * @since  22.07.18 21:34
  */
-class CdnConfigurationParserTest extends PHPUnit_Framework_TestCase
+class CdnConfigurationParserTest extends \PHPUnit\Framework\TestCase
 {
     public function testParseConfiguration()
     {

@@ -10,7 +10,7 @@ use Sparwelt\ImgixLib\ImgixServiceFactory;
  *
  * @covers \Sparwelt\ImgixLib\ImgixServiceFactory
  */
-class ImgixServiceFactoryTest extends PHPUnit_Framework_TestCase
+class ImgixServiceFactoryTest extends \PHPUnit\Framework\TestCase
 {
     const CDN_CONFIGURATION = [
         'uploads' => [

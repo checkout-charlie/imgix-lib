@@ -9,7 +9,7 @@ use Sparwelt\ImgixLib\ImgixServiceFactory;
  *
  * @since  22.07.18 21:33
  */
-class ImgixServiceTest extends PHPUnit_Framework_TestCase
+class ImgixServiceTest extends \PHPUnit\Framework\TestCase
 {
     const CDN = [
         [

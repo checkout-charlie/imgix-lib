@@ -7,7 +7,7 @@ use Sparwelt\ImgixLib\Components\ImageRenderer;
  *
  * @since  22.07.18 21:34
  */
-class ImageRendererTest extends PHPUnit_Framework_TestCase
+class ImageRendererTest extends \PHPUnit\Framework\TestCase
 {
     public function testRenderImage()
     {

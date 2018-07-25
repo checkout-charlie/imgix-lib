@@ -10,7 +10,7 @@ use Sparwelt\ImgixLib\ImgixServiceFactory;
  *
  * @covers \Sparwelt\ImgixLib\ImgixService
  */
-class MultipleCdnConfigurationTest extends PHPUnit_Framework_TestCase
+class MultipleCdnConfigurationTest extends \PHPUnit\Framework\TestCase
 {
     const CDN_CONFIGURATION = [
         'source_domains_and_pattern' => [

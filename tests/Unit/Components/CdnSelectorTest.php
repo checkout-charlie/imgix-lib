@@ -9,7 +9,7 @@ use Sparwelt\ImgixLib\Model\CdnConfiguration;
  *
  * @since  22.07.18 21:34
  */
-class CdnSelectorTest extends PHPUnit_Framework_TestCase
+class CdnSelectorTest extends \PHPUnit\Framework\TestCase
 {
     public function testSelectCdnFor()
     {

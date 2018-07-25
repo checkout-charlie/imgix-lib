@@ -10,7 +10,7 @@ use Sparwelt\ImgixLib\Interfaces\UrlGeneratorInterface;
  *
  * @since  22.07.18 21:34
  */
-class AttributeGeneratorTest extends PHPUnit_Framework_TestCase
+class AttributeGeneratorTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @covers \Sparwelt\ImgixLib\Components\AttributeGenerator::__construct()

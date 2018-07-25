@@ -13,7 +13,7 @@ use Sparwelt\ImgixLib\Interfaces\ImageRendererInterface;
  *
  * @since  22.07.18 21:34
  */
-class ImageGeneratorTest extends PHPUnit_Framework_TestCase
+class ImageGeneratorTest extends \PHPUnit\Framework\TestCase
 {
     public function testGenerate()
     {
