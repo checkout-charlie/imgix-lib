@@ -6,7 +6,8 @@ php:
   - '7.2'
 
 install:
-  composer install
+  - composer require php-coveralls/php-coveralls:"^2.1" phpunit/phpcov:">=3.0"
+  - composer install
 
 after_success:
   - travis_retry php vendor/bin/php-coveralls
