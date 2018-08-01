@@ -252,7 +252,7 @@ class ImgixServiceTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @covers \Sparwelt\ImgixLib\ImgixService::convertHtml()
+     * @covers \Sparwelt\ImgixLib\ImgixService::transformHtml()
      */
     public function testConvertHtml()
     {
@@ -268,7 +268,7 @@ class ImgixServiceTest extends \PHPUnit\Framework\TestCase
             <a href="foo"</td><img data-src="https://test.imgix.net/test2.png" alt="bar">
             <img data-href="/mypage.html" src="https://test.imgix.net/test3.png" srcset="https://test.imgix.net/foo.png 1x, https://test.imgix.net/bar.gif 2x" alt="bar" ng-src="https://test.imgix.net/test3.png">
             <img src="" alt="bar">< img data-src="/test5.png" alt="bar">',
-            $this->imgix->convertHtml($originalHtml)
+            $this->imgix->transformHtml($originalHtml)
         );
 
         $this->assertEquals('
@@ -276,7 +276,7 @@ class ImgixServiceTest extends \PHPUnit\Framework\TestCase
             <a href="foo"</td><img data-src="https://test.imgix.net/test2.png" alt="bar">
             <img data-href="/mypage.html" src="https://test.imgix.net/test3.png?h=10&w=20" srcset="https://test.imgix.net/foo.png 1x, https://test.imgix.net/bar.gif 2x" alt="bar" ng-src="https://test.imgix.net/test3.png">
             <img src="" alt="bar">< img data-src="/test5.png" alt="bar">',
-            $this->imgix->convertHtml($originalHtml, ['src' => ['h' => 10, 'w' => 20]])
+            $this->imgix->transformHtml($originalHtml, ['src' => ['h' => 10, 'w' => 20]])
         );
 
         $this->assertEquals('
@@ -284,7 +284,7 @@ class ImgixServiceTest extends \PHPUnit\Framework\TestCase
             <a href="foo"</td><img data-src="https://test.imgix.net/test2.png" alt="bar">
             <img data-href="/mypage.html" src="https://test.imgix.net/test3.png?h=100&w=200" srcset="https://test.imgix.net/test3.png?h=200&w=400 2x, https://test.imgix.net/test3.png?h=300&w=600 3x" alt="bar" ng-src="https://test.imgix.net/test3.png">
             <img src="" alt="bar">< img data-src="/test5.png" alt="bar">',
-            $this->imgix->convertHtml($originalHtml, 'responsive1')
+            $this->imgix->transformHtml($originalHtml, 'responsive1')
         );
 
         $this->assertEquals('
@@ -292,7 +292,7 @@ class ImgixServiceTest extends \PHPUnit\Framework\TestCase
             <a href="foo"</td><img data-src="https://test.imgix.net/test2.png" alt="bar">
             <img data-href="/mypage.html" src="https://test.imgix.net/test3.png?h=30&w=60" srcset="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="bar" ng-src="https://test.imgix.net/test3.png" data-srcset="https://test.imgix.net/test3.png?h=60&w=120 100w, https://test.imgix.net/test3.png?h=90&w=180 500w" data-sizes="auto" class="lazyload">
             <img src="" alt="bar">< img data-src="/test5.png" alt="bar">',
-            $this->imgix->convertHtml($originalHtml, 'lazysizes_transparent')
+            $this->imgix->transformHtml($originalHtml, 'lazysizes_transparent')
         );
     }
 
@@ -310,13 +310,13 @@ class ImgixServiceTest extends \PHPUnit\Framework\TestCase
 
     public function testFailingHtmlTranslation()
     {
-        $this->assertEquals('<img src="">', $this->imgix->convertHtml('<img src=" ">'));
+        $this->assertEquals('<img src="">', $this->imgix->transformHtml('<img src=" ">'));
     }
 
     /**
      * @covers \Sparwelt\ImgixLib\ImgixService::prepareFilters
      */
-    public function testExtraAttributes()
+    public function testExtraFilters()
     {
         $this->assertEquals(
             'https://test.imgix.net/test.png?h=100&w=200',

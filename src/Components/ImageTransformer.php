@@ -17,6 +17,7 @@ class ImageTransformer implements ImageTransformerInterface
 {
     /** @var AttributeGeneratorInterface */
     private $attributeGenerator;
+
     /** @var ImageRendererInterface */
     private $renderer;
 
@@ -67,7 +68,7 @@ class ImageTransformer implements ImageTransformerInterface
         // apply the cdn domain on the remaining attributes
         foreach ($image->attributes as $attribute) {
             if (!in_array($attribute->name, $processedAttributes)) {
-                $this->convertFilenames($attribute);
+                $this->applyCdnDomain($attribute);
             }
         }
 
@@ -75,9 +76,22 @@ class ImageTransformer implements ImageTransformerInterface
     }
 
     /**
+     * @param string $word
+     *
+     * @return bool
+     */
+    protected function isImageUrl($word)
+    {
+        return in_array(
+            strtolower(pathinfo(parse_url($word, PHP_URL_PATH), PATHINFO_EXTENSION)),
+            ['png', 'svg', 'png', 'jpg', 'jpeg', 'gif', 'ico']
+        );
+    }
+
+    /**
      * @param \DOMAttr $attribute
      */
-    private function convertFilenames(\DOMAttr $attribute)
+    private function applyCdnDomain(\DOMAttr $attribute)
     {
         $words = preg_split("/[\s]+/", $attribute->value);
         $processedWords = [];
@@ -95,18 +109,5 @@ class ImageTransformer implements ImageTransformerInterface
         }
 
         $attribute->value = implode(' ', $processedWords);
-    }
-
-    /**
-     * @param string $word
-     *
-     * @return bool
-     */
-    protected function isImageUrl($word)
-    {
-        return in_array(
-            strtolower(pathinfo(parse_url($word, PHP_URL_PATH), PATHINFO_EXTENSION)),
-            ['png', 'svg', 'png', 'jpg', 'jpeg', 'gif', 'ico']
-        );
     }
 }

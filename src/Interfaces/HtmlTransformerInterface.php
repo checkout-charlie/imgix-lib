@@ -7,7 +7,7 @@ namespace Sparwelt\ImgixLib\Interfaces;
  *
  * @since  22.07.18 21:25
  */
-interface HtmlConverterInterface
+interface HtmlTransformerInterface
 {
     /**
      * @param string $originalHtml
@@ -15,5 +15,5 @@ interface HtmlConverterInterface
      *
      * @return string
      */
-    public function convertHtml($originalHtml, array $attributesFilters = []);
+    public function transformHtml($originalHtml, array $attributesFilters = []);
 }

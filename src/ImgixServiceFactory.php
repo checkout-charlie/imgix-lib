@@ -7,7 +7,7 @@ use Sparwelt\ImgixLib\Components\CdnConfigurationParser;
 use Sparwelt\ImgixLib\Components\CdnSelector;
 use Sparwelt\ImgixLib\Components\ImageGenerator;
 use Sparwelt\ImgixLib\Components\ImageRenderer;
-use Sparwelt\ImgixLib\Components\HtmlConverter;
+use Sparwelt\ImgixLib\Components\HtmlTransformer;
 use Sparwelt\ImgixLib\Components\ImageTransformer;
 use Sparwelt\ImgixLib\Components\ImgixUrlGenerator;
 
@@ -33,7 +33,7 @@ class ImgixServiceFactory
         $imageRenderer = new ImageRenderer();
         $imageTransformer = new ImageTransformer($attributeGenerator, $imageRenderer);
         $imageGenerator = new ImageGenerator($attributeGenerator, $imageRenderer);
-        $htmlConverter = new HtmlConverter($imageTransformer);
+        $htmlConverter = new HtmlTransformer($imageTransformer);
 
         return new ImgixService($urlGenerator, $attributeGenerator, $imageGenerator, $imageTransformer, $htmlConverter, $filtersConfigurations);
     }

@@ -4,7 +4,7 @@ namespace Sparwelt\ImgixLib\Components;
 
 use Sparwelt\ImgixLib\Exception\ResolutionException;
 use Sparwelt\ImgixLib\Exception\TransformationException;
-use Sparwelt\ImgixLib\Interfaces\HtmlConverterInterface;
+use Sparwelt\ImgixLib\Interfaces\HtmlTransformerInterface;
 use Sparwelt\ImgixLib\Interfaces\ImageTransformerInterface;
 
 /**
@@ -12,10 +12,10 @@ use Sparwelt\ImgixLib\Interfaces\ImageTransformerInterface;
  *
  * @since  22.07.18 21:15
  */
-class HtmlConverter implements HtmlConverterInterface
+class HtmlTransformer implements HtmlTransformerInterface
 {
     /** @var ImageTransformerInterface */
-    private $transformer;
+    private $imageTransformer;
 
     /**
      * HtmlConverter constructor.
@@ -24,7 +24,7 @@ class HtmlConverter implements HtmlConverterInterface
      */
     public function __construct(ImageTransformerInterface $transformer)
     {
-        $this->transformer = $transformer;
+        $this->imageTransformer = $transformer;
     }
 
     /**
@@ -33,14 +33,14 @@ class HtmlConverter implements HtmlConverterInterface
      *
      * @return null|string|string[]
      */
-    public function convertHtml($originalHtml, array $attributesFilters = [])
+    public function transformHtml($originalHtml, array $attributesFilters = [])
     {
         // regex is used because:
         // 1 - preserves the original html, that would otherwise change when converted to a DOM abstraction
         // 2 - works with invalid surrounding html
         return preg_replace_callback('/(<img[^>]+>)/i', function ($matches) use ($attributesFilters) {
             try {
-                return $this->transformer->transformImage($matches[0], $attributesFilters);
+                return $this->imageTransformer->transformImage($matches[0], $attributesFilters);
             } catch (\Exception $e) {
                 if ($e instanceof ResolutionException || $e instanceof TransformationException) {
                     return $matches[0];

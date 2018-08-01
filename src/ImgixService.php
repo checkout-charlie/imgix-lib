@@ -4,7 +4,7 @@ namespace Sparwelt\ImgixLib;
 
 use Sparwelt\ImgixLib\Exception\ConfigurationException;
 use Sparwelt\ImgixLib\Interfaces\AttributeGeneratorInterface;
-use Sparwelt\ImgixLib\Interfaces\HtmlConverterInterface;
+use Sparwelt\ImgixLib\Interfaces\HtmlTransformerInterface;
 use Sparwelt\ImgixLib\Interfaces\ImageGeneratorInterface;
 use Sparwelt\ImgixLib\Interfaces\ImageTransformerInterface;
 use Sparwelt\ImgixLib\Interfaces\UrlGeneratorInterface;
@@ -29,8 +29,8 @@ class ImgixService
     /** @var ImageTransformerInterface  */
     protected $imageTransformer;
 
-    /** @var HtmlConverterInterface  */
-    protected $htmlConverter;
+    /** @var HtmlTransformerInterface  */
+    protected $htmlTransformer;
 
     /** @var array */
     protected $filtersConfigurations;
@@ -40,7 +40,7 @@ class ImgixService
      * @param AttributeGeneratorInterface $attributeGenerator
      * @param ImageGeneratorInterface     $imageGenerator
      * @param ImageTransformerInterface   $imageTransformer
-     * @param HtmlConverterInterface      $htmlConverter
+     * @param HtmlTransformerInterface    $htmlConverter
      * @param array                       $filtersConfigurations
      */
     public function __construct(
@@ -48,14 +48,14 @@ class ImgixService
         AttributeGeneratorInterface $attributeGenerator,
         ImageGeneratorInterface $imageGenerator,
         ImageTransformerInterface $imageTransformer,
-        HtmlConverterInterface $htmlConverter,
+        HtmlTransformerInterface $htmlConverter,
         array $filtersConfigurations = []
     ) {
         $this->urlGenerator = $urlGenerator;
         $this->attributeGenerator = $attributeGenerator;
         $this->imageGenerator = $imageGenerator;
         $this->imageTransformer = $imageTransformer;
-        $this->htmlConverter = $htmlConverter;
+        $this->htmlTransformer = $htmlConverter;
         $this->filtersConfigurations = $filtersConfigurations;
     }
 
@@ -110,11 +110,11 @@ class ImgixService
      *
      * @return string
      */
-    public function convertHtml($html, $attributesFiltersOrConfigurationKey = [], array $extraFilters = [])
+    public function transformHtml($html, $attributesFiltersOrConfigurationKey = [], array $extraFilters = [])
     {
         $attributesFilters = $this->prepareFilters($attributesFiltersOrConfigurationKey, $extraFilters);
 
-        return $this->htmlConverter->convertHtml($html, $attributesFilters);
+        return $this->htmlTransformer->transformHtml($html, $attributesFilters);
     }
 
     /**

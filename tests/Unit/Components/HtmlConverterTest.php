@@ -1,6 +1,6 @@
 <?php
 
-use Sparwelt\ImgixLib\Components\HtmlConverter;
+use Sparwelt\ImgixLib\Components\HtmlTransformer;
 use Sparwelt\ImgixLib\Exception\ConfigurationException;
 use Sparwelt\ImgixLib\Exception\TransformationException;
 use Sparwelt\ImgixLib\Interfaces\ImageTransformerInterface;
@@ -44,9 +44,9 @@ class HtmlConverterTest extends \PHPUnit\Framework\TestCase
                 return str_replace('.png', '.converted', $imghtml);
             }));
 
-        $converter = new HtmlConverter($imageTransformer);
+        $converter = new HtmlTransformer($imageTransformer);
 
-        $this->assertEquals($expectedHtml, $converter->convertHtml($originalHtml, $attributesFilters));
+        $this->assertEquals($expectedHtml, $converter->transformHtml($originalHtml, $attributesFilters));
     }
 
     public function testTransformerFailure()
@@ -85,9 +85,9 @@ class HtmlConverterTest extends \PHPUnit\Framework\TestCase
                 return str_replace('.png', '.converted', $imghtml);
             }));
 
-        $converter = new HtmlConverter($imageTransformer);
+        $converter = new HtmlTransformer($imageTransformer);
 
-        $this->assertEquals($expectedHtml, $converter->convertHtml($originalHtml, $attributesFilters));
+        $this->assertEquals($expectedHtml, $converter->transformHtml($originalHtml, $attributesFilters));
     }
 
     public function testConfigurationFailure()
@@ -109,9 +109,9 @@ class HtmlConverterTest extends \PHPUnit\Framework\TestCase
             ->with('<img src="/test.png" alt="foo" >', $attributesFilters)
             ->willThrowException(new ConfigurationException());
 
-        $converter = new HtmlConverter($imageTransformer);
+        $converter = new HtmlTransformer($imageTransformer);
 
         $this->expectException(ConfigurationException::class);
-        $converter->convertHtml($originalHtml, $attributesFilters);
+        $converter->transformHtml($originalHtml, $attributesFilters);
     }
 }
