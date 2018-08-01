@@ -90,7 +90,7 @@ $imgix = ImgixServiceFactory::createFromConfiguration($cdnConfiguration, [
     ]
 ]); 
  
-echo $imgix->generateImage('dir/test.png', 'my_normal_filter');
+echo $imgix->generateImage('dir/test.png', 'my_basic_filter');
 //<img src="https://test.imgix.net/dir/test.png?h=30&w=60">
 
 echo $imgix->generateImage('dir/test.png', 'my_blur_lazyload_filter');
@@ -103,6 +103,9 @@ echo $imgix->generateImage('dir/test.png', 'my_blur_lazyload_filter');
 echo $imgix->generateUrl('dir/test.png', 'my_blur_lazyload_filter.src');
 //https://test.imgix.net/test.png?h=30&w=60
 
+echo $imgix->generateUrl('dir/test.png', 'my_normal_filter', ['q' => 75]);
+//https://test.imgix.net/dir/test.png?h=30&w=60&q=75
+
 echo $imgix->transformHtml($html, 'my_blur_lazyload_filter');
 //... replaces all images with responsive ones
 ```
@@ -112,7 +115,7 @@ Different cdn domains and configurations can be specified.
 The resolver will start evaluating the first configuration and will pass to the next until a suitable match is found.
 If multiple domains are specified for the same configuration entry, they will be rotated (this is known as 'domain sharding', the default strategy is 'crc')
 ```php
-$imgix = ImgixServiceFactory::createFromConfiguration(
+$imgix = ImgixServiceFactory::createFromConfiguration([
         // mathches images whose source domain is 'mysite.com' (including subdomains)
         // AND path begins with 'uploads/' OR 'media/'
         // Relative urls won't match
@@ -177,4 +180,5 @@ $imgix = ImgixServiceFactory::createFromConfiguration(
         'default' => [
             'cdn_domains' => ['default.imgix.net'],
         ],
+    ]);
 ```
