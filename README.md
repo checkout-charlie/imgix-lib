@@ -39,8 +39,8 @@ echo $imgix->generateImage('/dir/test.png', [
             ],
             'sizes' => '(min-width: 900px) 1000px, (max-width: 900px)'
 ]);
-// <img src="https://test.imgix.net/test.png?h=150&w=300"
-//      srcset="https://test.imgix.net/test.png?h=300&w=600 100w, https://test.imgix.net/test.png?h=600&w=900 500w"
+// <img src="https://test.imgix.net/dir/test.png?h=150&w=300"
+//      srcset="https://test.imgix.net/dir/test.png?h=300&w=600 100w, https://test.imgix.net/dir/test.png?h=600&w=900 500w"
 //      sizes="(min-width: 900px) 1000px, (max-width: 900px)">
 
 // attribute generation
@@ -64,15 +64,15 @@ echo $imgix->generateImage('/dir/test.png', [
             'class' => 'lazyload',
         ],
 ]);
-//<img src="https://test.imgix.net/test.png?h=30&w=60" 
+//<img src="https://test.imgix.net/dir/test.png?h=30&w=60" 
 //     srcset="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
-//     data-srcset="https://test.imgix.net/test.png?h=60&w=120 100w, https://test.imgix.net/test.png?h=90&w=180 500w"
+//     data-srcset="https://test.imgix.net/dir/test.png?h=60&w=120 100w, https://test.imgix.net/dir/test.png?h=90&w=180 500w"
 //     data-sizes="auto" 
 //     class="lazyload">
 ```
 
 ### Named filters
-Instead of repeating filters at every usage, some named filters can be created once and called by name: 
+Instead of repeating filters at every usage, named filters can be configured once and called by name: 
 ```php
 $imgix = ImgixServiceFactory::createFromConfiguration($cdnConfiguration, [
     'my_basic_filter' => [

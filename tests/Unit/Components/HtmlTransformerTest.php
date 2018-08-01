@@ -10,7 +10,7 @@ use Sparwelt\ImgixLib\Interfaces\ImageTransformerInterface;
  *
  * @since  22.07.18 21:34
  */
-class HtmlConverterTest extends \PHPUnit\Framework\TestCase
+class HtmlTransformerTest extends \PHPUnit\Framework\TestCase
 {
     public function testConvertHtml()
     {
