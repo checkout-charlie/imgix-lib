@@ -8,6 +8,7 @@ use Sparwelt\ImgixLib\Exception\ConfigurationException;
 use Sparwelt\ImgixLib\Exception\ResolutionException;
 use Sparwelt\ImgixLib\Interfaces\CdnSelectorInterface;
 use Sparwelt\ImgixLib\Interfaces\UrlGeneratorInterface;
+use Sparwelt\ImgixLib\Utils\Utils;
 
 /**
  * @author Federico Infanti <federico.infanti@sparwelt.de>
@@ -49,6 +50,15 @@ class ImgixUrlGenerator implements UrlGeneratorInterface
         }
 
         $cdn = $this->cdnSelector->getCdnForImage($originalUrl);
+
+        $queryParams = $cdn->isGenerateFilterParams() ? array_merge($cdn->getDefaultQueryParams(), $filterParams) : [];
+
+        if (Utils::isMatrix($queryParams)) {
+            throw new ConfigurationException(
+                sprintf('Monodimensional array expected, matrix given as query parameters: %s', serialize($queryParams))
+            );
+        }
+
         $cdnId = spl_object_hash($cdn);
         $shardStrategy = $this->translateShardStrategy($cdn->getShardStrategy());
 
@@ -72,7 +82,7 @@ class ImgixUrlGenerator implements UrlGeneratorInterface
             throw new ResolutionException(sprintf('Malformed image url %s', $originalUrl));
         }
 
-        return $this->builders[$cdnId]->createURL(parse_url($originalUrl, PHP_URL_PATH), $filterParams);
+        return $this->builders[$cdnId]->createURL(parse_url($originalUrl, PHP_URL_PATH), $queryParams);
     }
 
     /**

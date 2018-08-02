@@ -106,14 +106,4 @@ class AttributeGeneratorTest extends \PHPUnit\Framework\TestCase
         $this->expectException(ResolutionException::class);
         $this->assertEquals('', $attributeGenerator->generateAttributeValue('malformedurl.png', ['w' => 12]));
     }
-
-    public function testIsMatrix()
-    {
-        $this->assertTrue(AttributeGenerator::isMatrix(['a' => ['b']]));
-        $this->assertTrue(AttributeGenerator::isMatrix(['a' => ['b' => 1, 'c' => 2]]));
-        $this->assertFalse(AttributeGenerator::isMatrix(['a' => 1, 'b' => 2]));
-        $this->assertFalse(AttributeGenerator::isMatrix(['a', 'b']));
-        $this->assertFalse(AttributeGenerator::isMatrix('a'));
-        $this->assertFalse(AttributeGenerator::isMatrix(new stdClass()));
-    }
 }

@@ -19,6 +19,8 @@ class ImgixServiceFactoryTest extends \PHPUnit\Framework\TestCase
             'path_patterns' => ['^/media/uploads'],
             'sign_key' => '1234567890',
             'shard_strategy' => 'cycle',
+            'default_query_params' => ['auto' => 'format'],
+            'generate_filter_params' => true,
         ],
         'default' => [
             'cdn_domains' => ['test.imgix.net', 'test2.imgx.net'],

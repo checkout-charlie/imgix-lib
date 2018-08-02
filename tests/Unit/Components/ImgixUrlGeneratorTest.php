@@ -137,6 +137,53 @@ class ImgixUrlGeneratorTest extends \PHPUnit\Framework\TestCase
         );
     }
 
+    public function testDefaultQueryParams()
+    {
+        $cdn = new CdnConfiguration(['test.imgix.net'], [], [], null, 'cycle', true, ['cb' => 1234]);
+
+        $cdnSelector = $this->getMockBuilder(CdnSelectorInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $cdnSelector
+            ->expects($this->exactly(2))
+            ->method('getCdnForImage')
+            ->will($this->returnValue($cdn));
+
+        $generator = new ImgixUrlGenerator($cdnSelector);
+
+        $this->assertEquals(
+            'https://test.imgix.net/test/test1.png?cb=1234&h=200&w=300',
+            $generator->generateUrl('/test/test1.png', ['h' => 200, 'w' => 300])
+        );
+
+        $this->assertEquals(
+            'https://test.imgix.net/test/test2.png?cb=4567&h=200&w=300',
+            $generator->generateUrl('/test/test2.png', ['h' => 200, 'w' => 300, 'cb' => 4567])
+        );
+    }
+
+    public function testDisableGenerateFilterParams()
+    {
+        $cdn = new CdnConfiguration(['dev-env.test'], [], [], null, 'crc', false, [], false);
+
+        $cdnSelector = $this->getMockBuilder(CdnSelectorInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $cdnSelector
+            ->expects($this->exactly(1))
+            ->method('getCdnForImage')
+            ->will($this->returnValue($cdn));
+
+        $generator = new ImgixUrlGenerator($cdnSelector);
+
+        $this->assertEquals(
+            'http://dev-env.test/test/test1.png',
+            $generator->generateUrl('/test/test1.png', ['h' => 200, 'w' => 300])
+        );
+    }
+
     public function testEmptyImageUrl()
     {
         $cdnSelector = $this->getMockBuilder(CdnSelectorInterface::class)
@@ -203,4 +250,20 @@ class ImgixUrlGeneratorTest extends \PHPUnit\Framework\TestCase
         $generator->generateUrl('http:///example.com', []);
     }
 
+    public function testNonMonodimensionalQueryParameters()
+    {
+        $cdnSelector = $this->getMockBuilder(CdnSelectorInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $cdnSelector
+            ->expects($this->exactly(1))
+            ->method('getCdnForImage')
+            ->willReturn(new CdnConfiguration(['domain.com'], [], [], null));
+        ;
+
+        $generator = new ImgixUrlGenerator($cdnSelector);
+        $this->expectException(ConfigurationException::class);
+        $generator->generateUrl('http:///example.com', ['src' => ['w' => 15]]);
+    }
 }

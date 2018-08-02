@@ -6,6 +6,7 @@ use Sparwelt\ImgixLib\Exception\ConfigurationException;
 use Sparwelt\ImgixLib\Exception\ResolutionException;
 use Sparwelt\ImgixLib\Interfaces\AttributeGeneratorInterface;
 use Sparwelt\ImgixLib\Interfaces\UrlGeneratorInterface;
+use Sparwelt\ImgixLib\Utils\Utils;
 
 /**
  * @author Federico Infanti <federico.infanti@sparwelt.de>
@@ -34,7 +35,7 @@ class AttributeGenerator implements AttributeGeneratorInterface
     public function generateAttributeValue($sourceImageUrl, $filters = [])
     {
         // ['1x' => ['w' => 123, 'h' => 200], '2x' = > [..]]
-        if ($this::isMatrix($filters)) {
+        if (Utils::isMatrix($filters)) {
             $srcset = [];
             foreach ($filters as $format => $formatFilters) {
                 $srcset[] = sprintf(
@@ -58,25 +59,5 @@ class AttributeGenerator implements AttributeGeneratorInterface
         }
 
         throw new ConfigurationException('Filters should be either array or scalar');
-    }
-
-    /**
-     * @param mixed $var
-     *
-     * @return bool
-     */
-    public static function isMatrix($var)
-    {
-        if (!is_array($var)) {
-            return false;
-        }
-
-        foreach ($var as $v) {
-            if (is_array($v)) {
-                return true;
-            }
-        }
-
-        return false;
     }
 }

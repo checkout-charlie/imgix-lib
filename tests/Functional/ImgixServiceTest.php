@@ -314,7 +314,7 @@ class ImgixServiceTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @covers \Sparwelt\ImgixLib\ImgixService::prepareFilters
+     * @covers \Sparwelt\ImgixLib\ImgixService::prepareFilterParams
      */
     public function testExtraFilters()
     {

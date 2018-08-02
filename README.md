@@ -120,7 +120,7 @@ $imgix = ImgixServiceFactory::createFromConfiguration([
         // AND path begins with 'uploads/' OR 'media/'
         // Relative urls won't match
         'source_domains_and_pattern' => [
-            'cdn_domains' => ['source-domain-and-pattern.imgix.net'],
+            'cdn_domains' => ['my-subdomain-1.imgix.net'],
             'source_domains' => ['mysite.com'],
             'path_patterns' => ['^[/]uploads/', '^[/]media/'],
         ],
@@ -128,35 +128,35 @@ $imgix = ImgixServiceFactory::createFromConfiguration([
         // matches images whose source domain is exactly 'www3.mysite.com' OR 'www4.mysite.com'
         // Relative urls won't match
         'source_sub_domain' => [
-            'cdn_domains' => ['source-sub-domain.imgix.net'],
+            'cdn_domains' => ['my-subdomain-2.imgix.net'],
             'source_domains' => ['www3.mysite.com', 'www4.mysite.com'],
         ],
 
         // matches images whose source domain is 'mysite.com', including subdomains
         // Relative urls won't match
         'source_domains' => [
-            'cdn_domains' => ['source-domain.imgix.net'],
+            'cdn_domains' => ['my-subdomain-3.imgix.net'],
             'source_domains' => ['mysite.com'],
         ],
 
         // matches images whose source domain is 'mysite.com', including subdomains
         // AND relative urls (because of the 'null')
         'source_domains_and_null' => [
-            'cdn_domains' => ['source-domain.imgix.net'],
+            'cdn_domains' => ['my-subdomain-4.imgix.net'],
             'source_domains' => ['mysite.com', null],
         ],
 
         // Matches relative urls only, whose path begins with 'uploads/'.
         // Absolute urls won't match.
         'pattern' => [
-            'cdn_domains' => ['pattern.imgix.net'],
+            'cdn_domains' => ['my-subdomain-5.imgix.net'],
             'path_patterns' => ['^[/]pattern/'],
         ],
 
         // Matches relative urls only, whose path begins with 'sign-key/'.
         // Appends sign-key to the generated url (recommended)
         'sign_key' => [
-            'cdn_domains' => ['sign-key.imgix.net'],
+            'cdn_domains' => ['my-subdomain-6.imgix.net'],
             'path_patterns' => ['[^]/sign-key/'],
             'sign_key' => '12345',
         ],
@@ -164,21 +164,37 @@ $imgix = ImgixServiceFactory::createFromConfiguration([
         // Matches relative urls only, whose path begins with 'shard-crc/'.
         // Will choose the cdn domains by the hash of the path (recommended)
         'shard_crc' => [
-            'cdn_domains' => ['shard-crc1.imgix.net', 'shard-crc2.imgix.net'],
+            'cdn_domains' => ['my-subdomain-7.imgix.net', 'my-subdomain-8.imgix.net'],
             'path_patterns' => ['^[/]shard-crc/'],
         ],
 
         // Matches relative urls only, whose path begins with 'shard-cycle/'.
         // Will rotate between the 2 cdn domains (increase costs)
         'shard_cycle' => [
-            'cdn_domains' => ['shard-cycle1.imgix.net', 'shard-cycle2.imgix.net'],
+            'cdn_domains' => ['my-subdomain-9.imgix.net', 'my-subdomain-10.imgix.net'],
             'path_patterns' => ['^[/]shard-cycle/'],
             'shard_strategy' => 'cycle',
         ],
 
-        // Matches all relative urls.
+        // Default parameters can be added, useful for cache bursting or automatic formatting
+        'default_parameters' => [
+            'cdn_domains' => ['my-subdomain-11.imgix.net'],
+            'path_patterns' => ['^[/]shard-cycle/'],
+            'default_query_params' => ['cb' => '1234', 'auto' => 'quality'],
+        ],
+
+        // Disable parameters generation
+        // (useful for development/testing environments)
+        'bypass_dev' => [
+            'cdn_domains' => ['my-dev-domain.test'],
+            'source_domains' => ['my-dev-domain.test'],
+            'generate_filter_params' => false,
+            'use_ssl' => false
+        ],
+
+        // Matches all relative urls
         'default' => [
-            'cdn_domains' => ['default.imgix.net'],
+            'cdn_domains' => ['my-subdomain-12.imgix.net'],
         ],
     ]);
 ```

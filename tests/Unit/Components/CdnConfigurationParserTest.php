@@ -21,6 +21,8 @@ class CdnConfigurationParserTest extends \PHPUnit\Framework\TestCase
                     'path_patterns' => ['^/media/uploads/'],
                     'sign_key' => '1234567890',
                     'shard_strategy' => 'cycle',
+                    'default_query_params' => ['cb' => '1234'],
+                    'generate_filter_params' => true,
                 ],
                 'default' => [
                     'use_ssl' => true,
@@ -36,12 +38,18 @@ class CdnConfigurationParserTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(['^/media/uploads/'], $cdns[0]->getPathPatterns());
         $this->assertEquals('1234567890', $cdns[0]->getSignKey());
         $this->assertEquals('cycle', $cdns[0]->getShardStrategy());
+        $this->assertEquals(['cb' => '1234'], $cdns[0]->getDefaultQueryParams());
+        $this->assertEquals(true, $cdns[0]->isUseSsl());
+        $this->assertEquals(true, $cdns[0]->isGenerateFilterParams());
 
         $this->assertEquals(['test.imgix.net', 'test2.imgx.net'], $cdns[1]->getCdnDomains());
         $this->assertEquals([], $cdns[1]->getSourceDomains());
         $this->assertEquals([], $cdns[1]->getPathPatterns());
         $this->assertEquals(null, $cdns[1]->getSignKey());
+        $this->assertEquals([], $cdns[1]->getDefaultQueryParams());
         $this->assertEquals('crc', $cdns[1]->getShardStrategy());
+        $this->assertEquals(true, $cdns[1]->isGenerateFilterParams());
+        $this->assertEquals(true, $cdns[0]->isUseSsl());
     }
 
     public function testParseConfigurationWrongFormat()
@@ -92,5 +100,19 @@ class CdnConfigurationParserTest extends \PHPUnit\Framework\TestCase
         $this->expectException(ConfigurationException::class);
 
         CdnConfigurationParser::parseArray([['cdn_domains' => ['foo'], 'path_patterns' => ['[']]]);
+    }
+
+    public function testInvalidGenerateParams()
+    {
+        $this->expectException(ConfigurationException::class);
+
+        CdnConfigurationParser::parseArray([['cdn_domains' => ['foo'], 'generate_filter_params' => 'string']]);
+    }
+
+    public function testNonMonodimensionalDefaultParams()
+    {
+        $this->expectException(ConfigurationException::class);
+
+        CdnConfigurationParser::parseArray([['cdn_domains' => ['foo'], 'default_query_params' => ['src' => ['w' => 15]]]]);
     }
 }

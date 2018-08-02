@@ -16,7 +16,7 @@ class MultipleCdnConfigurationTest extends \PHPUnit\Framework\TestCase
         'source_domains_and_pattern' => [
             'cdn_domains' => ['source-domain-and-pattern.imgix.net'],
             'source_domains' => ['mysite.com'],
-            'path_patterns' => ['^/pattern/'],
+            'path_patterns' => ['^[/]pattern/'],
         ],
         'source_sub_domain' => [
             'cdn_domains' => ['source-sub-domain.imgix.net'],
@@ -28,21 +28,32 @@ class MultipleCdnConfigurationTest extends \PHPUnit\Framework\TestCase
         ],
         'pattern' => [
             'cdn_domains' => ['pattern.imgix.net'],
-            'path_patterns' => ['^/pattern/'],
+            'path_patterns' => ['^[/]pattern/'],
         ],
         'sign_key' => [
             'cdn_domains' => ['sign-key.imgix.net'],
-            'path_patterns' => ['^/sign-key/'],
+            'path_patterns' => ['^[/]sign-key/'],
             'sign_key' => '12345',
         ],
         'shard_crc' => [
             'cdn_domains' => ['shard-crc1.imgix.net', 'shard-crc2.imgix.net'],
-            'path_patterns' => ['^/shard-crc/'],
+            'path_patterns' => ['^[/]shard-crc/'],
         ],
         'shard_cycle' => [
             'cdn_domains' => ['shard-cycle1.imgix.net', 'shard-cycle2.imgix.net'],
-            'path_patterns' => ['^/shard-cycle/'],
+            'path_patterns' => ['^[/]shard-cycle/'],
             'shard_strategy' => 'cycle',
+        ],
+        'default_params' => [
+            'cdn_domains' => ['default-params.imgix.net'],
+            'path_patterns' => ['^[/]default-params/'],
+            'default_query_params' => ['cb' => 1234],
+        ],
+        'bypass_dev' => [
+            'cdn_domains' => ['my-dev-domain.test'],
+            'source_domains' => ['my-dev-domain.test'],
+            'generate_filter_params' => false,
+            'use_ssl' => false,
         ],
         'default' => [
             'cdn_domains' => ['default.imgix.net'],
@@ -114,6 +125,22 @@ class MultipleCdnConfigurationTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(
             'https://sign-key.imgix.net/sign-key/test.png?h=100&w=200&s=37980da0ecb2f0f0b52e05a9b32e78af',
             $this->imgix->generateUrl('/sign-key/test.png', ['w' => 200, 'h' => 100])
+        );
+    }
+
+    public function testDefaultQueryParams()
+    {
+        $this->assertEquals(
+            'https://default-params.imgix.net/default-params/test.png?cb=1234&h=100&w=200',
+            $this->imgix->generateUrl('/default-params/test.png', ['w' => 200, 'h' => 100])
+        );
+    }
+
+    public function testDisableQueryParams()
+    {
+        $this->assertEquals(
+            'http://my-dev-domain.test/test.png',
+            $this->imgix->generateUrl('http://my-dev-domain.test/test.png', ['w' => 200, 'h' => 100])
         );
     }
 

@@ -4,6 +4,7 @@ namespace Sparwelt\ImgixLib\Components;
 
 use Sparwelt\ImgixLib\Exception\ConfigurationException;
 use Sparwelt\ImgixLib\Model\CdnConfiguration;
+use Sparwelt\ImgixLib\Utils\Utils;
 
 /**
  * @author Federico Infanti <federico.infanti@sparwelt.de>
@@ -32,7 +33,9 @@ class CdnConfigurationParser
                 isset($cdn['path_patterns']) ? $cdn['path_patterns'] : [],
                 isset($cdn['sign_key']) ? $cdn['sign_key'] : null,
                 isset($cdn['shard_strategy']) ? $cdn['shard_strategy'] : 'crc',
-                isset($cdn['use_ssl']) ? $cdn['use_ssl'] : true
+                isset($cdn['use_ssl']) ? $cdn['use_ssl'] : true,
+                isset($cdn['default_query_params']) ? $cdn['default_query_params'] : [],
+                isset($cdn['generate_filter_params']) ? $cdn['generate_filter_params'] : true
             );
         }
 
@@ -81,6 +84,24 @@ class CdnConfigurationParser
             )) {
             throw new ConfigurationException(
                 sprintf('Allowed values for "shard_strategy" are "crc" or "cycle" in configuration %s', serialize($cdn))
+            );
+        }
+
+        if (isset($cdn['default_query_params']) && (!is_array($cdn['default_query_params']))) {
+            throw new ConfigurationException(
+                sprintf('Array value expected for "default_query_params" are "crc" or "cycle" in configuration %s', serialize($cdn))
+            );
+        }
+
+        if (isset($cdn['default_query_params']) && Utils::isMatrix($cdn['default_query_params'])) {
+            throw new ConfigurationException(
+                sprintf('Monodimensional array expected, matrix given as "default_query_parameters" in configuration: %s', serialize($cdn))
+            );
+        }
+
+        if (isset($cdn['generate_filter_params']) && !is_bool($cdn['generate_filter_params'])) {
+            throw new ConfigurationException(
+                sprintf('Boolean expected for "generate_filter_params" in configuration: %s', serialize($cdn))
             );
         }
     }

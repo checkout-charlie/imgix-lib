@@ -69,7 +69,7 @@ class ImgixService
      */
     public function generateUrl($originalUrl, $filtersOrConfigurationKey = [], array $extraFilters = [])
     {
-        $filters = $this->prepareFilters($filtersOrConfigurationKey, $extraFilters);
+        $filters = $this->prepareFilterParams($filtersOrConfigurationKey, $extraFilters);
 
         return $this->urlGenerator->generateUrl($originalUrl, $filters);
     }
@@ -84,7 +84,7 @@ class ImgixService
      */
     public function generateAttributeValue($originalUrl, $filtersOrConfigurationKey = [], array $extraFilters = [])
     {
-        $filters = $this->prepareFilters($filtersOrConfigurationKey, $extraFilters);
+        $filters = $this->prepareFilterParams($filtersOrConfigurationKey, $extraFilters);
 
         return $this->attributeGenerator->generateAttributeValue($originalUrl, $filters);
     }
@@ -98,7 +98,7 @@ class ImgixService
      */
     public function generateImage($originalUrl, $attributesFiltersOrConfigurationKey = [], array $extraFilters = [])
     {
-        $attributesFilters = $this->prepareFilters($attributesFiltersOrConfigurationKey, $extraFilters);
+        $attributesFilters = $this->prepareFilterParams($attributesFiltersOrConfigurationKey, $extraFilters);
 
         return $this->imageGenerator->generateImage($originalUrl, $attributesFilters);
     }
@@ -112,7 +112,7 @@ class ImgixService
      */
     public function transformHtml($html, $attributesFiltersOrConfigurationKey = [], array $extraFilters = [])
     {
-        $attributesFilters = $this->prepareFilters($attributesFiltersOrConfigurationKey, $extraFilters);
+        $attributesFilters = $this->prepareFilterParams($attributesFiltersOrConfigurationKey, $extraFilters);
 
         return $this->htmlTransformer->transformHtml($html, $attributesFilters);
     }
@@ -123,7 +123,7 @@ class ImgixService
      *
      * @return array
      */
-    private function prepareFilters($filtersOrConfigurationKey, array $extraFilters = [])
+    private function prepareFilterParams($filtersOrConfigurationKey, array $extraFilters = [])
     {
         if (is_array($filtersOrConfigurationKey)) {
             return array_merge($filtersOrConfigurationKey, $extraFilters);

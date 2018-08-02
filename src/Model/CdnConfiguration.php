@@ -33,17 +33,23 @@ class CdnConfiguration
     /** @var bool */
     private $useSsl;
 
+    /** @var string[] */
+    private $defaultQueryParams;
+
+    /** @var bool */
+    private $generateFilterParams;
+
     /**
-     * CdnConfiguration constructor.
-     *
      * @param string[]    $cdnDomains
      * @param string[]    $sourceDomains
      * @param string[]    $pathPatterns
      * @param string|null $signKey
      * @param string      $shardStrategy
      * @param bool        $useSsl
+     * @param string[]    $defaultQueryParams
+     * @param bool        $generateFilterParams
      */
-    public function __construct(array $cdnDomains, array $sourceDomains = [], array $pathPatterns = [], $signKey = null, $shardStrategy = 'crc', $useSsl = true)
+    public function __construct(array $cdnDomains, array $sourceDomains = [], array $pathPatterns = [], $signKey = null, $shardStrategy = 'crc', $useSsl = true, array $defaultQueryParams = [], $generateFilterParams = true)
     {
         $this->cdnDomains = $cdnDomains;
         $this->sourceDomains = $sourceDomains;
@@ -51,6 +57,8 @@ class CdnConfiguration
         $this->signKey = $signKey;
         $this->shardStrategy = $shardStrategy;
         $this->useSsl = $useSsl;
+        $this->defaultQueryParams = $defaultQueryParams;
+        $this->generateFilterParams = $generateFilterParams;
     }
 
     /**
@@ -99,5 +107,21 @@ class CdnConfiguration
     public function isUseSsl()
     {
         return $this->useSsl;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getDefaultQueryParams()
+    {
+        return $this->defaultQueryParams;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isGenerateFilterParams()
+    {
+        return $this->generateFilterParams;
     }
 }
