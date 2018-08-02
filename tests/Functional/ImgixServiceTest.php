@@ -254,7 +254,7 @@ class ImgixServiceTest extends \PHPUnit\Framework\TestCase
     /**
      * @covers \Sparwelt\ImgixLib\ImgixService::transformHtml()
      */
-    public function testConvertHtml()
+    public function testTransformHtml()
     {
         $originalHtml = '
             </ul><ul><img src="/test.png" alt="foo" ></ul>
