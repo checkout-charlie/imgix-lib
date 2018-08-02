@@ -25,7 +25,7 @@ echo $imgix->generateImage('/dir/test.png', ['src' => ['w' => 100, 'h' => 200]])
 
 // html conversion
 echo $imgix->transformHtml('<li><img src="/test.png"><\li><li><img src="/test2.png">', ['src' => ['w' => 100, 'h' => 200]]);
-// '<li><img src="https://my.imgix.net/test.png"><\li><li><img src="https://my.imgix.net/test2.png">'
+// '<li><img src="https://my.imgix.net/test.png?w=100&h=200"><\li><li><img src="https://my.imgix.net/test2.png?w=100&h=200">'
 ```
 
 ### Responsive usage
