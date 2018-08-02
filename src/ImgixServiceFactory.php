@@ -35,6 +35,6 @@ class ImgixServiceFactory
         $imageGenerator = new ImageGenerator($attributeGenerator, $imageRenderer);
         $htmlConverter = new HtmlTransformer($imageTransformer);
 
-        return new ImgixService($urlGenerator, $attributeGenerator, $imageGenerator, $imageTransformer, $htmlConverter, $filtersConfigurations);
+        return new ImgixService($urlGenerator, $attributeGenerator, $imageGenerator, $htmlConverter, $filtersConfigurations);
     }
 }

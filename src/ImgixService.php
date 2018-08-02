@@ -21,13 +21,9 @@ class ImgixService
 
     /** @var AttributeGeneratorInterface */
     protected $attributeGenerator;
-    /**
-     * @var ImageGeneratorInterface
-     */
-    private $imageGenerator;
 
-    /** @var ImageTransformerInterface  */
-    protected $imageTransformer;
+    /** @var ImageGeneratorInterface */
+    private $imageGenerator;
 
     /** @var HtmlTransformerInterface  */
     protected $htmlTransformer;
@@ -39,7 +35,6 @@ class ImgixService
      * @param UrlGeneratorInterface       $urlGenerator
      * @param AttributeGeneratorInterface $attributeGenerator
      * @param ImageGeneratorInterface     $imageGenerator
-     * @param ImageTransformerInterface   $imageTransformer
      * @param HtmlTransformerInterface    $htmlConverter
      * @param array                       $filtersConfigurations
      */
@@ -47,14 +42,12 @@ class ImgixService
         UrlGeneratorInterface $urlGenerator,
         AttributeGeneratorInterface $attributeGenerator,
         ImageGeneratorInterface $imageGenerator,
-        ImageTransformerInterface $imageTransformer,
         HtmlTransformerInterface $htmlConverter,
         array $filtersConfigurations = []
     ) {
         $this->urlGenerator = $urlGenerator;
         $this->attributeGenerator = $attributeGenerator;
         $this->imageGenerator = $imageGenerator;
-        $this->imageTransformer = $imageTransformer;
         $this->htmlTransformer = $htmlConverter;
         $this->filtersConfigurations = $filtersConfigurations;
     }
