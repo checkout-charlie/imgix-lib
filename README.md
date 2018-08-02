@@ -110,7 +110,7 @@ echo $imgix->transformHtml($html, 'my_blur_lazyload_filter');
 //... replaces all images with responsive ones
 ```
 
-### Multiple cdn domains
+### Multiple cdn configurations
 Different cdn domains and configurations can be specified.
 The resolver will start evaluating the first configuration and will pass to the next until a suitable match is found.
 If multiple domains are specified for the same configuration entry, they will be rotated (this is known as 'domain sharding', the default strategy is 'crc')
