@@ -6,7 +6,6 @@ use Sparwelt\ImgixLib\Exception\ConfigurationException;
 use Sparwelt\ImgixLib\Interfaces\AttributeGeneratorInterface;
 use Sparwelt\ImgixLib\Interfaces\HtmlTransformerInterface;
 use Sparwelt\ImgixLib\Interfaces\ImageGeneratorInterface;
-use Sparwelt\ImgixLib\Interfaces\ImageTransformerInterface;
 use Sparwelt\ImgixLib\Interfaces\UrlGeneratorInterface;
 
 /**
