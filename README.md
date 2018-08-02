@@ -20,11 +20,11 @@ echo $imgix->generateUrl('/dir/test.png', ['w' => 100, 'h' => 200]);
 // "https://my.imgix.net/dir/test.png?w=100&h=200"
 
 // image generation
-echo $imgix->generateImage('/dir/test.png', ['src => ['w' => 100, 'h' => 200]]);
+echo $imgix->generateImage('/dir/test.png', ['src' => ['w' => 100, 'h' => 200]]);
 // <img src="https://my.imgix.net/dir/test.png?w=100&h=200">
 
 // html conversion
-echo $imgix->transformHtml('<li><img src="/test.png"><\li><li><img src="/test2.png">', ['src => ['w' => 100, 'h' => 200]]);
+echo $imgix->transformHtml('<li><img src="/test.png"><\li><li><img src="/test2.png">', ['src' => ['w' => 100, 'h' => 200]]);
 // '<li><img src="https://my.imgix.net/test.png"><\li><li><img src="https://my.imgix.net/test2.png">'
 ```
 
