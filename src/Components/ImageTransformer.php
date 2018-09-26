@@ -61,9 +61,7 @@ class ImageTransformer implements ImageTransformerInterface
                         $processedAttributes[] = $attributeName;
                     }
                 }
-            } catch (ResolutionException $e) {
-            } catch () {
-
+            } catch (\Exception $e) {
             }
         }
 
