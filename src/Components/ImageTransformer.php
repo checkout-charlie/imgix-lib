@@ -62,13 +62,19 @@ class ImageTransformer implements ImageTransformerInterface
                     }
                 }
             } catch (ResolutionException $e) {
+            } catch () {
+
             }
         }
 
         // apply the cdn domain on the remaining attributes
         foreach ($image->attributes as $attribute) {
             if (!in_array($attribute->name, $processedAttributes)) {
-                $this->applyCdnDomain($attribute);
+                try {
+                    $this->applyCdnDomain($attribute);
+                } catch (\Exception $e) {
+                    // pass
+                }
             }
         }
 
