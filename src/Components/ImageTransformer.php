@@ -54,7 +54,19 @@ class ImageTransformer implements ImageTransformerInterface
         $processedAttributes = [];
         if (!empty($originalImageUrl) && false === strpos($originalImageUrl, 'data:image/')) {
             try {
-                foreach ($attributesFilters as $attributeName => $filters) {
+                $elementFilters = $attributesFilters;
+
+                // consider html 'width' and 'height' attributes for filter generation
+                if (isset($elementFilters['src']) && is_array($elementFilters['src'])) {
+                    if ($image->hasAttribute('width') && '' !== $image->getAttribute('width')) {
+                        $elementFilters['src']['w'] = $image->getAttribute('width');
+                    }
+                    if ($image->hasAttribute('height') && '' !== $image->getAttribute('height')) {
+                        $elementFilters['src']['h'] = $image->getAttribute('height');
+                    }
+                }
+
+                foreach ($elementFilters as $attributeName => $filters) {
                     $attributeValue = $this->attributeGenerator->generateAttributeValue($originalImageUrl, $filters);
                     if ('' !== $attributeValue) {
                         $image->setAttribute($attributeName, $attributeValue);

@@ -186,4 +186,46 @@ class ImageTransformerTest extends \PHPUnit\Framework\TestCase
             $imageTransformer->transformImage('<img class="foo" alt="bar" other="http://mysite.com/extra1.png 1x, malformed/extra2.png 2x">', $attributesFilters)
         );
     }
+
+    public function testTransformImageWithHtmlWidthHeightAttributes()
+    {
+        $attributesFilters = [
+            'src' => ['h' => 100, 'w' => 200],
+        ];
+
+        $attributeGenerator = $this->getMockBuilder(AttributeGeneratorInterface::class)
+            ->getMock();
+
+        $attributeGenerator
+            ->expects($this->exactly(5))
+            ->method('generateAttributeValue')
+            ->withConsecutive(
+                ['src.png', ['h' => 10, 'w' => 20]],
+                ['src.png', ['h' => 100, 'w' => 20]],
+                ['src.png', ['h' => 10, 'w' => 200]],
+                ['src.png', ['h' => 100, 'w' => 200]],
+                ['src.png', ['h' => 100, 'w' => 200]],
+                ['', ['h' => 100, 'w' => 200]],
+                ['', ['h' => 100, 'w' => 200]]
+            )
+            ->will($this->returnValue('test'));
+
+        $imageRenderer = $this->getMockBuilder(ImageRendererInterface::class)
+            ->getMock();
+
+        $imageRenderer
+            ->expects($this->exactly(7))
+            ->method('render')
+            ->will($this->returnValue('test'));
+
+        $imageTransformer = new ImageTransformer($attributeGenerator, $imageRenderer);
+
+        $imageTransformer->transformImage('<img src="src.png" height="10" width="20">', $attributesFilters);
+        $imageTransformer->transformImage('<img src="src.png" height="" width="20">', $attributesFilters);
+        $imageTransformer->transformImage('<img src="src.png" height="10" width="">', $attributesFilters);
+        $imageTransformer->transformImage('<img src="src.png" height="" width="">', $attributesFilters);
+        $imageTransformer->transformImage('<img src="src.png">', $attributesFilters);
+        $imageTransformer->transformImage('<img src="" height="10">', $attributesFilters);
+        $imageTransformer->transformImage('<img src="" width="20">', $attributesFilters);
+    }
 }
