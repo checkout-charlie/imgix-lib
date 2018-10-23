@@ -69,7 +69,9 @@ class CdnSelector implements CdnSelectorInterface
             return empty($sourceDomains) || in_array(null, $sourceDomains);
         }
 
-        return in_array($imageHost, $sourceDomains) || in_array(explode('.', $imageHost, 2)[1], $sourceDomains);
+        $imageHosts = explode('.', $imageHost, 2);
+
+        return in_array($imageHost, $sourceDomains) || (isset($imageHost[1]) && in_array($imageHosts[1], $sourceDomains));
     }
 
     /**
