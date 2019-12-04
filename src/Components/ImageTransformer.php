@@ -109,11 +109,6 @@ class ImageTransformer implements ImageTransformerInterface
      */
     private function applyCdnDomain(\DOMAttr $attribute)
     {
-        // prevent 'unterminated entity reference' error when & and &amp are present in text
-        if (false !== \strstr($attribute->value, '& ') || false !== \strstr($attribute->value, '&amp; ')) {
-            return;
-        }
-
         $words = preg_split("/[\s]+/", $attribute->value);
         $processedWords = [];
 
