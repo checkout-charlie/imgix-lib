@@ -82,7 +82,9 @@ class ImageTransformer implements ImageTransformerInterface
         // apply the cdn domain on the remaining attributes
         foreach ($image->attributes as $attribute) {
             if (!in_array($attribute->name, $processedAttributes)) {
-                $this->applyCdnDomain($attribute);
+                if (!in_array($attribute->name, ['alt', 'title', 'class'])) {
+                    $this->applyCdnDomain($attribute);
+                }
             }
         }
 
@@ -107,11 +109,6 @@ class ImageTransformer implements ImageTransformerInterface
      */
     private function applyCdnDomain(\DOMAttr $attribute)
     {
-        // prevent 'unterminated entity reference' error when & and &amp are present in text
-        if (false !== \strstr($attribute->value, '& ') || false !== \strstr($attribute->value, '&amp; ')) {
-            return;
-        }
-
         $words = preg_split("/[\s]+/", $attribute->value);
         $processedWords = [];
 
